@@ -164,6 +164,7 @@ def inject(injection, password, f):
 # Command-line arguments parser
 parser = argparse.ArgumentParser(description="Login Cracker")
 parser.add_argument('-u', '--username', required=True, type=str, help="Username to log in")
+parser.add_argument('-c', '--max_number_of_columns', required=False, default = 30, help="Maximum number of columns to try")
 parser.add_argument('-t', '--target', required=True, help="Target URL. Example: http//target.url/login")
 args = parser.parse_args()
 
