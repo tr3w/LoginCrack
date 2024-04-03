@@ -10,13 +10,16 @@
 # run script for usage instructions
 #
 
+login_password = "letmein"
+
 import sys
 import re
 import requests
 import argparse
 
-
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -26,11 +29,13 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.webdriver.common.keys import Keys
 
-options = webdriver.ChromeOptions()
+options = Options()
 # Turn off to see the browser's value
-#options.headless = True
-browser = webdriver.Chrome(options=options)
-login_password = "666666666"
+options.add_argument("--headless")
+
+browser = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
+
+
     
 #### Main function
 def crack():
