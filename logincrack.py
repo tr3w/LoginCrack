@@ -10,12 +10,37 @@
 # run script for usage instructions
 #
 
+
 login_password = "letmein"
+
+
+
+# hash functions, feel free to edit
+
+import hashlib
+import base64
+functions = [ login_password, 
+              "hashlib.md5(b'%s').hexdigest()",
+              "hashlib.sha1(b'%s').hexdigest()",
+              "hashlib.sha224(b'%s').hexdigest()",
+              "hashlib.sha256(b'%s').hexdigest()",
+              "hashlib.sha384(b'%s').hexdigest()",
+              "hashlib.sha512(b'%s').hexdigest()",
+              "hashlib.sha3_224(b'%s').hexdigest()",
+              "hashlib.sha3_256(b'%s').hexdigest()",
+              "hashlib.sha3_384(b'%s').hexdigest()",
+              "hashlib.sha3_512(b'%s').hexdigest()", 
+              "base64.b64encode(b'%s').decode('utf-8')"
+              ]
+
+
 
 import sys
 import re
 import requests
 import argparse
+
+sys.stdout.write('[+] Initializing tool.\n')
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -100,24 +125,6 @@ def crack():
                     password = ''
                     inject(injection, password, f)
                     
-                    
-                    # hash functions, feel free to edit
-                    
-                    import hashlib
-                    import base64
-                    functions = [ login_password, 
-                                  "hashlib.md5(b'%s').hexdigest()",
-                                  "hashlib.sha1(b'%s').hexdigest()",
-                                  "hashlib.sha224(b'%s').hexdigest()",
-                                  "hashlib.sha256(b'%s').hexdigest()",
-                                  "hashlib.sha384(b'%s').hexdigest()",
-                                  "hashlib.sha512(b'%s').hexdigest()",
-                                  "hashlib.sha3_224(b'%s').hexdigest()",
-                                  "hashlib.sha3_256(b'%s').hexdigest()",
-                                  "hashlib.sha3_384(b'%s').hexdigest()",
-                                  "hashlib.sha3_512(b'%s').hexdigest()", 
-                                  "base64.b64encode(b'%s').decode('utf-8')"
-                                  ]
                     
                     for fn in range(1, len(functions)):
                         functions[fn] = functions[fn]  % login_password
